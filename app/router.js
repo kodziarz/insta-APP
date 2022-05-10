@@ -1,8 +1,7 @@
 const path = require("path")
 const fs = require("fs")
 const logger = require('tracer').colorConsole()
-const RequestDataHandler = require("./RequestDataHandler");
-const FilesController = require("./FilesController")
+const App = require("./App")
 
 // załącz controller, utils , tablicę zwierząt
 
@@ -13,8 +12,8 @@ const FilesController = require("./FilesController")
 
 const router = async (request, response) => {
 
-    let filesController = new FilesController()
-    let requestDataHandler = new RequestDataHandler()
+    
+    let app = new App()
     // obsługa zapytań
 
     switch (request.method) {
@@ -30,7 +29,7 @@ const router = async (request, response) => {
             switch (true) {
                 case request.url == "/api/photos":
 
-                    let filesList = await filesController.handleFileUpload(request)
+                    let filesList = await app.loadFile(request)
                     response.end(JSON.stringify(filesList))
                     logger.log("odebrano plik")
                     break
