@@ -13,8 +13,9 @@ class JsonController {
             logger.error("Nie podano albumu zdjęcia.")
             return null
         }
-        let modelObject = new ImageData(fields.album, "originalName", "https://xd")
-        logger.log("obecnie przygotowany obiekt do wrzucenia w model: ", modelObject)
+        let modelObject = new ImageData(fields.album, "originalName", "https://xd").toJSON()
+        Model.push(modelObject)
+        ImageData.fromJSON(modelObject)
     }
 }
 

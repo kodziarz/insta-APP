@@ -14,7 +14,7 @@ class HistoryEntry {
     constructor(status) {
 
         // status
-        for (let possibleStatus in HistoryEntry.STATUSES) {
+        for (let possibleStatus of Object.values(HistoryEntry.STATUSES)) {
             if (status == possibleStatus) {
                 this.status = status
                 break
@@ -29,10 +29,11 @@ class HistoryEntry {
     }
 
     toJSON = () => {
-        return {
-            status: this.status,
-            lastModifiedDate: this.lastModifiedDate
-        }
+        return Object.fromEntries(Object.entries(this).filter(([key, value]) => {
+            if (value instanceof Function)
+                return false
+            return true
+        }))
     }
 }
 
