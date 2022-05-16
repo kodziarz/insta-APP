@@ -42,9 +42,14 @@ class ImageData {
         let finalObject = new ImageData(json.album, json.originalName, json.url);
 
         Object.entries(json).forEach(([key, value]) => {
-            logger.debug("value: ", value, " key: ", key)
+            //logger.debug("value: ", value, " key: ", key)
             finalObject[key] = value
         })
+        return finalObject
+    }
+
+    addHistoryEntry = () => {
+        this.history.push(new HistoryEntry("zmienione " + this.history.length))
     }
 }
 

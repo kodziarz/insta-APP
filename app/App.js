@@ -1,6 +1,8 @@
 const RequestDataHandler = require("./app/RequestDataHandler");
 const FilesController = require("./app/FilesController")
-const JsonController = require("./app/JsonController")
+const JsonController = require("./app/JsonController");
+const { request } = require("http");
+const { resolve } = require("path/posix");
 
 class App {
     //   klasa nadzoruje pracę całej aplikacji - rozdziala zadania po otrzumaniu zaputania z routera
@@ -16,11 +18,44 @@ class App {
     }
 
     loadFile = async (request) => {
-        let data = await this.filesController.handleFileUpload(request)
-        let files = data.files
-        let fields = data.fields
-        this.jsonController.saveImageData(files, fields)
-        return files
+        return new Promise(async (resolve) => {
+            let data = await this.filesController.handleFileUpload(request)
+            let files = data.files
+            let fields = data.fields
+            await this.jsonController.saveImageData(files, fields)
+            resolve(files)
+        })
+
+    }
+
+    sendAllFiles = async (request) => {
+        return new Promise(async (resolve) => {
+            let arrayToReturn = []
+            this.jsonController.forEachFile((e) => {
+                arrayToReturn.push(e)
+            })
+            resolve(arrayToReturn)
+        })
+    }
+
+    sendFileById = async (id, request) => {
+        return new Promise(async (resolve) => {
+            resolve(await this.jsonController.getFileById(id))
+        })
+    }
+
+    editFileById = async (id, request) => {
+        return new Promise(async (resolve) => {
+            this.jsonController.editFileById(id)
+            resolve(undefined)
+        })
+    }
+
+    deleteFileById = async (id, request) => {
+        return new Promise(async (resolve) => {
+            this.jsonController.deleteFileById(id)
+            resolve(undefined)
+        })
     }
 }
 

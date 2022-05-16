@@ -12,7 +12,7 @@ const App = require("./App")
 
 const router = async (request, response) => {
 
-    
+
     let app = new App()
     // obsługa zapytań
 
@@ -20,7 +20,11 @@ const router = async (request, response) => {
         case "GET":
             switch (true) {
                 case request.url == "/api/photos":
-                    response.end("legalne zapytanie")
+                    response.end(JSON.stringify(
+                        app.sendAllFiles(request),
+                        null,
+                        5
+                    ))
                     break
             }
 
@@ -29,9 +33,9 @@ const router = async (request, response) => {
             switch (true) {
                 case request.url == "/api/photos":
 
+                    logger.info("odebrano zapytanie o zapisanie pliku")
                     let filesList = await app.loadFile(request)
                     response.end(JSON.stringify(filesList))
-                    logger.log("odebrano plik")
                     break
             }
             break;
