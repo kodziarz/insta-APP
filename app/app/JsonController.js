@@ -14,6 +14,10 @@ class JsonController {
     #getImageDataById = async (id) => {
         return new Promise(async (resolve) => {
             Model.forEach((e) => {
+                logger.debug("e.id: ", e.id)
+                logger.debug("id: ", id)
+                logger.debug("e.id: ", e.id.toString().charAt(e.id.toString().length - 1))
+                logger.debug("id: ", id.charAt(id.length - 1))
                 if (e.id == id)
                     resolve(e)
             })
@@ -52,6 +56,7 @@ class JsonController {
                 return null
             }
             let modelObject = new ImageData(fields.album, "originalName", "https://xd").toJSON()
+            logger.log("ImageData nadano id: ", modelObject.id)
             Model.push(modelObject)
             ImageData.fromJSON(modelObject)
         })
@@ -87,7 +92,7 @@ class JsonController {
                 logger.error("metoda forEachFile nie dostała funkcji w parametrze. Zwracam nulla.")
                 resolve(null)
             }
-            Model.forEach(change(e, i, org))
+            Model.forEach(change)
             resolve(undefined)
         })
     }

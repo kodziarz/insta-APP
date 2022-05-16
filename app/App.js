@@ -1,8 +1,8 @@
 const RequestDataHandler = require("./app/RequestDataHandler");
 const FilesController = require("./app/FilesController")
 const JsonController = require("./app/JsonController");
-const { request } = require("http");
-const { resolve } = require("path/posix");
+const logger = require("tracer").colorConsole()
+
 
 class App {
     //   klasa nadzoruje pracę całej aplikacji - rozdziala zadania po otrzumaniu zaputania z routera
@@ -34,6 +34,7 @@ class App {
             this.jsonController.forEachFile((e) => {
                 arrayToReturn.push(e)
             })
+            logger.debug("arrayToReturn: ", arrayToReturn)
             resolve(arrayToReturn)
         })
     }

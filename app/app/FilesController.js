@@ -23,6 +23,7 @@ class FilesController {
 
             form.parse(request, function (err, fields, files) {
 
+                //logger.log("otrzymane pola: ", fields)
                 logger.log("plik zapisano pod ścieżką: ", files.file.path)
 
                 resolve({ files: files, fields: fields })
@@ -30,7 +31,7 @@ class FilesController {
         })
     }
 
-    readFile = (path) => {
+    readFile = async (path) => {
         return await fs.readDir(path)
     }
 }

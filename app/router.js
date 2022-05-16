@@ -16,18 +16,31 @@ const router = async (request, response) => {
     let app = new App()
     // obsługa zapytań
 
+
     switch (request.method) {
         case "GET":
             switch (true) {
                 case request.url == "/api/photos":
                     response.end(JSON.stringify(
-                        app.sendAllFiles(request),
+                        await app.sendAllFiles(request),
                         null,
                         5
                     ))
                     break
+                case request.url.match(/\/api\/photos\/([0-9]+)/) != null:
+                    let id = request.url.split("/")[3]
+                    response.end(JSON.stringify(
+                        await app.sendFileById(id, request),
+                        null,
+                        5
+                    ))
+                    break
+                default:
+                    logger.warn("Przyszło zapytanie metodą: ", request.method, " na nieobsługiwany url: ", request.url)
+                    response.end("end")
+                    break
             }
-
+            break
 
         case "POST":
             switch (true) {
@@ -37,9 +50,16 @@ const router = async (request, response) => {
                     let filesList = await app.loadFile(request)
                     response.end(JSON.stringify(filesList))
                     break
+                default:
+                    logger.warn("Przyszło zapytanie metodą: ", request.method, " na nieobsługiwany url: ", request.url)
+                    response.end("end")
+                    break
             }
-            break;
-
+            break
+        default:
+            logger.error("Przyszło zapytanie o nieobsługiwanej metodzie: ", request.method)
+            response.end("404")
+            break
     }
 }
 

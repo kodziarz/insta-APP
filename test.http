@@ -16,3 +16,6 @@ nazwa_albumu
 
 ### GET - pobierz wszystkie dane
 GET http://localhost:3000/api/photos HTTP/1.1
+
+### GET - pobierz jednego fotosa
+GET http://localhost:3000/api/photos/1652724631264 HTTP/1.1
