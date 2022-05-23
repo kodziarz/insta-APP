@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "formidable": "^1.2.2",
-    "install": "^0.13.0",
-    "npm": "^8.10.0",
-    "tracer": "^1.1.5"
-  }
-}
