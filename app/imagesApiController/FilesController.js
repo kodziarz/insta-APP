@@ -68,7 +68,7 @@ class FilesController {
             logger.warn("Nie odnaleziono folderu uploadu. Tworzę.")
             try {
                 await fsPromises.mkdir(FilesController.UPLOAD_DIR)
-                logger.info("Pomyślnie utworzono folder uploadu.")
+                logger.log("Pomyślnie utworzono folder uploadu.")
             } catch (err) {
                 logger.fatal("Nie udało się utworzyć folderu uploadu.")
                 throw err

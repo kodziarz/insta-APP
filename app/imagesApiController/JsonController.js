@@ -151,6 +151,14 @@ class JsonController {
         })
     }
 
+    getTagsOfImage = async (id) => {
+        return new Promise(async (resolve) => {
+
+            let imageData = await this.#getImageDataById(id)
+            resolve(imageData.tags)
+        })
+    }
+
     forEachFile = async (change) => {
         return new Promise(async (resolve) => {
             if (!(change instanceof Function)) {

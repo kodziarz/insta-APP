@@ -17,7 +17,7 @@ class RequestDataHandler {
             request.on("end", function (data) {
                 if (body != undefined) {
                     let obj = JSON.parse(body)
-                    logger.log("Odebrano dane: ", obj)
+                    //logger.log("Odebrano dane: ", obj)
                     resolve(obj)
                 } else {
                     resolve(null)

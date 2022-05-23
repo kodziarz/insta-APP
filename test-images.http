@@ -18,10 +18,10 @@ nazwa_albumu
 GET http://localhost:3000/api/photos HTTP/1.1
 
 ### GET - pobierz jednego fotosa
-GET http://localhost:3000/api/photos/1653045462066 HTTP/1.1
+GET http://localhost:3000/api/photos/1653301525107 HTTP/1.1
 
 ### PATCH - zmień jednego fotosa
-PATCH  http://localhost:3000/api/photos/1653041900993 HTTP/1.1
+PATCH  http://localhost:3000/api/photos/1653300746863 HTTP/1.1
 
 ### DELETE - usuń jednego fotosa
 DELETE  http://localhost:3000/api/photos/1653045462066 HTTP/1.1

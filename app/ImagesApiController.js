@@ -73,6 +73,19 @@ class ImagesApiController {
             resolve(modifiedImageData)
         })
     }
+
+    getTagsOfImage = async (id, tagName) => {
+        return new Promise(async (resolve) => {
+
+            let tags = await this.jsonController.getTagsOfImage(id)
+            logger.log("Znaleziono tagi dla obrazka o id: ", id)
+            let response = {
+                id: id,
+                tags: tags
+            }
+            resolve(response)
+        })
+    }
 }
 
 module.exports = ImagesApiController

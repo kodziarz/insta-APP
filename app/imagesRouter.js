@@ -38,6 +38,15 @@ const router = async (request, response, imagesApiController, tagsApiController)
                         5
                     ))
                     break
+                case request.url.match(/\/api\/photos\/tags\/([0-9]+)$/) != null:
+                    let id2 = request.url.split("/")[3]
+                    logger.info("Odebrano zapytanie o wysłanie tagów zdjęcia o id: ", id)
+                    response.end(JSON.stringify(
+                        await imagesApiController.getTagsOfImage(id2),
+                        null,
+                        5
+                    ))
+                    break
                 default:
                     logger.warn("Przyszło zapytanie metodą: ", request.method, " na nieobsługiwany url: ", request.url)
                     response.end("end")
@@ -77,16 +86,16 @@ const router = async (request, response, imagesApiController, tagsApiController)
             break
         case "PATCH":
             switch (true) {
-                // case request.url.match(/\/api\/photos\/([0-9]+)/) != null:
-                //     let id = request.url.split("/")[3]
-                //     logger.info("Odebrano zapytanie o edycję pliku o id: ", id)
-                //     response.end(JSON.stringify(
-                //         await imagesApiController.editFileById(id, request),
-                //         null,
-                //         5
-                //     ))
-                //     break
-                case request.url.match(/\/api\/photos\/([0-9]+)\/tags/) != null:
+                case request.url.match(/\/api\/photos\/([0-9]+)$/) != null:
+                    let id = request.url.split("/")[3]
+                    logger.info("Odebrano zapytanie o edycję pliku o id: ", id)
+                    response.end(JSON.stringify(
+                        await imagesApiController.editFileById(id, request),
+                        null,
+                        5
+                    ))
+                    break
+                case request.url.match(/\/api\/photos\/([0-9]+)\/tags$/) != null:
                     let req = RequestDataHandler.getRequestPromise(request)
                     let id2 = request.url.split("/")[3]
                     logger.info("Odebrano zapytanie o dodanie taga do pliku o id: ", id2)
@@ -107,6 +116,34 @@ const router = async (request, response, imagesApiController, tagsApiController)
                         null,
                         5
                     ))
+                    break
+                case request.url.match(/\/api\/photos\/([0-9]+)\/tags\/mass$/) != null:
+                    {
+                        let req = RequestDataHandler.getRequestPromise(request)
+                        let id = request.url.split("/")[3]
+                        logger.info("Odebrano zapytanie o dodanie tagów do pliku o id: ", id)
+                        req = await req
+                        // zabezbpieczenie przed brakiem danych
+                        if (!(req.tags instanceof Array)) {
+                            logger.warn("Otrzymane zapytanie o dodanie tagów do zdjęcia nie zawiera nazwy taga. Odsyłam nulla.")
+                            return response.end(null)
+                        }
+                        //dodanie tagów
+                        req.tags.forEach(async (tag) => {
+                            if (!(await tagsApiController.doesTagExist(tag))) {
+                                logger.warn("Otrzymane zapytanie o dodanie tagów do zdjęcia zawiera tag, który nie istnieje: ", tag, ". Odsyłam nulla.")
+                                return
+                            }
+                            //właściwe dodawanie
+                            imagesApiController.addTagToImage(id, tag)
+                        })
+                        response.end(JSON.stringify(
+                            await imagesApiController.getFileById(id),
+                            null,
+                            5
+                        ))
+                    }
+
                     break
                 default:
                     logger.warn("Przyszło zapytanie metodą: ", request.method, " na nieobsługiwany url: ", request.url)
