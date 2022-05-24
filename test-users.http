@@ -1,0 +1,10 @@
+### POST - rejestracja użytkownika
+POST http://localhost:3000/api/user/register HTTP/1.1
+Content-Type: application/json
+
+{    
+   "name": "name",
+   "lastName": "lastName",
+   "email":"gregor47@poczta.fm",
+   "password":"cośtam"
+}
