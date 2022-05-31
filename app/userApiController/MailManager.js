@@ -9,6 +9,8 @@ class MailManager {
     constructor() {
 
         //dotenv.config()
+        logger.debug("process.env.APP_MAIL_NAME: ", process.env.APP_MAIL_NAME);
+        logger.debug("process.env.APP_MAIL_PASSWORD: ", process.env.APP_MAIL_PASSWORD)
 
         this.#config = {
             host: "kodziarz@yahoo.com",

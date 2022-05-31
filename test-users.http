@@ -8,3 +8,18 @@ Content-Type: application/json
    "email":"gregor47@poczta.fm",
    "password":"cośtam"
 }
+
+### GET - weryfikacja użytkownika
+GET http://localhost:3000/api/user/confirm/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTY1Mzk3NzYzMTMxNCwiZW1haWwiOiJncmVnb3I0N0Bwb2N6dGEuZm0iLCJuYW1lIjoibmFtZSIsImxhc3ROYW1lIjoibGFzdE5hbWUiLCJwYXNzd29yZCI6ImNvxZt0YW0iLCJjb25maXJtZWQiOmZhbHNlLCJpYXQiOjE2NTM5Nzc2MzEsImV4cCI6MTY1Mzk3NzgxMX0.LSgi8RJPY3lZv-H0HyX0Hem03l9mMqRJrcU8_iAj-0o HTTP/1.1
+
+### POST - logowanie użytkownika
+POST http://localhost:3000/api/user/login
+Content-Type: application/json
+
+{    
+   "name": "name",
+   "password": "cośtam"
+}
+
+### GET - pobierz lisę użytkowników
+GET http://localhost:3000/api/user

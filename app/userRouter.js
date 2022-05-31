@@ -21,21 +21,34 @@ const router = async (request, response, userApiController) => {
             switch (true) {
                 case request.url.match(/api\/user\/confirm\//) != null:
                     logger.info("Odebrano zapytanie o potwierdzenie użytkownika tokenem.")
-                    response.end(JSON.stringify(
-                        { response: "Niby 404 ale git" },
-                        null,
-                        5
-                    ))
-                    logger.log("Odesłano listę tagów.")
+                    let token = request.url.split("/")[4]
+                    logger.log("otrzymany token: ", token)
+                    try {
+                        await userApiController.confirmUser(token)
+                        response.writeHead(200, { "Content-Type": "application/json" }); // token authorized                        logger.log("Zweryfikowano token jako ważny")
+
+                    } catch (ex) {
+                        switch (ex.status) {
+                            case "TokenExpiredError": {
+                                response.writeHead(401, { "Content-Type": "application/json" }); // invalid token
+                                logger.log("Zweryfikowano token jako nieważny")
+                                break
+                            } default: {
+                                response.writeHead(502, { "Content-Type": "application/json" }); // internal server error
+                                logger.error("Wystąpił jakiś nieobsługiwany błąd: ", ex)
+                            }
+                        }
+
+                    }
                     break
                 case request.url == "/api/user":
                     logger.info("Odebrano zapytanie o wysłanie listy wszystkich użytkowników.")
                     response.end(JSON.stringify(
-                        await tagsApiController.getAllTags(),
+                        await userApiController.getAllUsers(),
                         null,
                         5
                     ))
-                    logger.log("Odesłano listę tagów.")
+                    logger.log("Odesłano listę użytkowników.")
                     break
                 default:
                     logger.warn("Przyszło zapytanie metodą: ", request.method, " na nieobsługiwany url: ", request.url)
@@ -51,16 +64,12 @@ const router = async (request, response, userApiController) => {
                     logger.info("Odebrano zapytanie o zajerestrowanie użytkownika.")
                     req = await req
 
-                    // zabezpieczenie
-                    if ((req.name == null || req.name == undefined)
-                        && (req.lastName == null || req.lastName == undefined)
-                        && (req.email == null || req.email == undefined)
-                        && (req.name == null || req.name == undefined)) {
-                        logger.warn("Pod adresem: ", request.url, " otrzymano obiekt nie posiadający odpowiednich danych.")
-                        response.end(null)
+                    try {
+                        await userApiController.registerUser(req)
+                    } catch (ex) {
+                        logger.warn("Otrzymane dane nie spełniają jakiś założeń")
+                        logger.error(ex)
                     }
-
-                    await userApiController.registerUser(req)
                     response.end("cośtam idzie")
                 }
                     break
@@ -68,8 +77,34 @@ const router = async (request, response, userApiController) => {
                     let req = RequestDataHandler.getRequestPromise(request)
                     logger.info("Odebrano zapytanie o zalogowanie użytkownika.")
                     req = await req
+                    logger.debug("req: ", req)
 
-                    logger.debug("Dalsza część jest nieskończona.")
+                    try {
+                        let token = await userApiController.loginUser(req.name, req.password)
+                        response.writeHead(200, { "Content-Type": "application/json" }); // token authorized                        response.end()
+                        response.end(JSON.stringify(
+                            { token: token }
+                        ))
+                        console.log("Pomyślnie zalogowano użytkownika");
+                    } catch (ex) {
+                        switch (ex.status) {
+                            case "WrongParametersException": {
+                                response.writeHead(400, { "Content-Type": "application/json" }); // niepełne dane usera
+                                response.end()
+                                logger.warn("Otrzymano niepełne dane użytkownika.")
+                                break
+                            } case "WrongCredentialsException": {
+                                response.writeHead(404, { "Content-Type": "application/json" }); // user not found
+                                response.end()
+                                logger.log("usytkownik o nazwie: ", req.name, " nie istnieje lub podano błędne hasło")
+                                break
+                            } default: {
+                                logger.error("otrzymano nieobsłużony błąd:")
+                                logger.error(ex)
+                                break
+                            }
+                        }
+                    }
                 }
                     break
                 default:
